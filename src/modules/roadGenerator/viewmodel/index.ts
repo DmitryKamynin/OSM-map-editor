@@ -10,6 +10,7 @@ import turfTransform from "./turfTransform";
 import getLeftAndRightSides from "./getLeftAndRightSides";
 import { Feature } from "ol";
 import getLot from "./getLot";
+import styleFunction from "../styleForLinesTest";
 
 const style = new Style({
   stroke: new Stroke({
@@ -56,12 +57,6 @@ const RoadGenerator = () => {
 
     let route: number[][] = [];
     let turn = false;
-
-    const test = new Feature({
-      geometry: new LineString(firstLine),
-    });
-
-    vectorSource.addFeature(test);
 
     latArray.forEach((lat) => {
       const leftSideId = firstLine.findIndex(
