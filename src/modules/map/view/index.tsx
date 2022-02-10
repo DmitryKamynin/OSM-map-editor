@@ -23,6 +23,8 @@ const MapComponent = (): JSX.Element => (
     className="map"
     ref={(div): void => {
       if (div) {
+        div.style.width = "100%";
+        div.style.height = "100%";
         map.setTarget(div);
       }
     }}

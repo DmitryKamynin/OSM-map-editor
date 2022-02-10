@@ -6,6 +6,7 @@ import vectorSource from "../../map/modules/vectorSource/model";
 import { Feature } from "ol";
 import { Geometry } from "ol/geom";
 import ColorPickerStore from "../../colorPicker/viewModel";
+import RoadGenerator from "../../roadGenerator/viewmodel";
 
 type Keys = ToolsModelType["currentTool"];
 
@@ -69,6 +70,12 @@ const menuLists = (): MenuList => {
             title: "Выбрать новый цвет",
             action() {
               ColorPickerStore.handleOpen(true);
+            },
+          },
+          {
+            title: "Сгенерировать маршрут",
+            action() {
+              RoadGenerator();
             },
           },
         ]

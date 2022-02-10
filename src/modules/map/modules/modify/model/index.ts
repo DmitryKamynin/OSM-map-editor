@@ -4,6 +4,7 @@ import StyleControl from "../../../../colorPicker/model";
 import FeatureManager from "../../../../featureManager/viewModel";
 import { Feature } from "ol";
 import { Geometry } from "ol/geom";
+import RoadGenerator from "../../../../roadGenerator/viewmodel";
 
 const modify = new Modify({
   source: vectorSource,
@@ -18,6 +19,13 @@ modify.on("modifyend", (e) => {
       FeatureManager.removeFromLocalStorage(feature);
       FeatureManager.saveToLocalStorage(feature);
     }
+  }
+});
+
+modify.on("change", () => {
+  const feature = FeatureManager.currentFeature;
+  if (feature) {
+    RoadGenerator();
   }
 });
 
