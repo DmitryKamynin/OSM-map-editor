@@ -10,7 +10,6 @@ import turfTransform from "./turfTransform";
 import getLeftAndRightSides from "./getLeftAndRightSides";
 import { Feature } from "ol";
 import getLot from "./getLot";
-import styleFunction from "../styleForLinesTest";
 
 const style = new Style({
   stroke: new Stroke({
