@@ -3,26 +3,12 @@ import { LineString, Polygon } from "ol/geom";
 import along from "@turf/along";
 import length from "@turf/length";
 import vectorSource from "../../map/modules/vectorSource/model";
-import { Fill, Stroke, Style } from "ol/style";
-import CircleStyle from "ol/style/Circle";
 import getPointId from "./getStartPointId";
 import turfTransform from "./turfTransform";
 import getLeftAndRightSides from "./getLeftAndRightSides";
 import { Feature } from "ol";
 import getLot from "./getLot";
-
-const style = new Style({
-  stroke: new Stroke({
-    width: 4,
-    color: "rgba(0,0,0,0.55)",
-  }),
-  image: new CircleStyle({
-    radius: 4,
-    fill: new Fill({
-      color: "#f95555",
-    }),
-  }),
-});
+import StyleControl from "../../colorPicker/model";
 
 const RoadGenerator = () => {
   if (FeatureManager.currentFeature) {
@@ -36,12 +22,10 @@ const RoadGenerator = () => {
       startPointId,
       endPointId
     );
-    const delta = JSON.parse(
-      JSON.stringify([coords[startPointId], coords[endPointId]])
-    );
+    const delta = [[...coords[startPointId]], [...coords[endPointId]]];
     delta[1][0] = coords[startPointId][0];
 
-    const distance = 5;
+    const distance = 0.001;
     const turfDelta = turfTransform(delta);
     const deltaLength = length(turfDelta as any);
 
@@ -50,7 +34,6 @@ const RoadGenerator = () => {
     for (let i = 1; deltaLength > distance * i; i++) {
       const point = along(turfDelta as any, distance * i);
       const geom = turfTransform(point);
-
       latArray.push(geom.getGeometry().getCoordinates()[1]);
     }
 
@@ -101,7 +84,12 @@ const RoadGenerator = () => {
     const Route = new Feature({
       geometry: new LineString(route),
     });
-    Route.setStyle(style);
+    const styleControl = new StyleControl("#000");
+    Route.setStyle(styleControl.style);
+    // Сохраняю объект класса, styleControl в пропсах фичи, чтобы можно было манипулировать её стилем в будущем в FeatureManager
+    Route.setProperties({
+      styleControl,
+    });
     vectorSource.addFeature(Route);
   }
 };

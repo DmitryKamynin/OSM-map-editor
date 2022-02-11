@@ -3,6 +3,7 @@ import Tool from "../modules/tools/view";
 import ContextMenu from "../modules/contextmenu/view";
 import mapControlInit from "../modules/map/viewModel";
 import StylePicker from "../modules/colorPicker/view";
+import LayerSwitch from "../modules/layerSwitch/view";
 
 mapControlInit();
 
@@ -13,6 +14,7 @@ export function App() {
       <Tool />
       <ContextMenu />
       <StylePicker />
+      <LayerSwitch />
     </>
   );
 }

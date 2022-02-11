@@ -4,9 +4,10 @@ import { Draw } from "ol/interaction";
 import FeatureManager from "../../featureManager/viewModel";
 import vectorSource from "../../map/modules/vectorSource/model";
 import { Feature } from "ol";
-import { Geometry } from "ol/geom";
+import { Geometry, Polygon } from "ol/geom";
 import ColorPickerStore from "../../colorPicker/viewModel";
 import RoadGenerator from "../../roadGenerator/viewmodel";
+import { toLonLat } from "ol/proj";
 
 type Keys = ToolsModelType["currentTool"];
 
@@ -50,6 +51,9 @@ const menuLists = (): MenuList => {
                 title: "Сохранить объект",
                 action() {
                   FeatureManager.saveToLocalStorage(feature);
+                  console.log(
+                    (feature.getGeometry() as Polygon).getCoordinates()[0][0]
+                  );
                 },
               }
             : {
