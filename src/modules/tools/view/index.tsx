@@ -8,28 +8,12 @@ const tools: {
   tool: ToolsModelType["currentTool"];
 }[] = [
   {
-    title: "Карандаш",
-    tool: "pen",
-  },
-  {
-    title: "Полигон",
+    title: "Polygon",
     tool: "polygon",
   },
   {
-    title: "Маршрут",
+    title: "Line",
     tool: "line",
-  },
-  {
-    title: "Редактирование",
-    tool: "edit",
-  },
-  {
-    title: "Выбор",
-    tool: "choice",
-  },
-  {
-    title: "Без инструмента",
-    tool: "none",
   },
 ];
 
@@ -39,7 +23,8 @@ const Tool = observer(
       {tools.map((item) => (
         <li
           onClick={() => {
-            ToolsStore.setTool(item.tool);
+            if (ToolsStore.currentTool !== item.tool) ToolsStore.setTool(item.tool);
+            else ToolsStore.setTool("none");
           }}
           className={ToolsStore.currentTool === item.tool ? "active" : ""}
         >

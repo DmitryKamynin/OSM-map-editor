@@ -1,62 +1,65 @@
 import { XYZ } from "ol/source";
 import { Tile } from "ol/layer";
 
-const bounds = {
+const bounds: Record<number, number[][]> = {
+  13: [
+    [3885, 3885],
+    [3118, 3118],
+  ],
+  14: [
+    [7770, 7771],
+    [6237, 6237],
+  ],
+  15: [
+    [15541, 15543],
+    [12474, 12475],
+  ],
   16: [
-    [31086, 31087],
-    [24949, 24949],
+    [31083, 31087],
+    [24949, 24951],
   ],
   17: [
-    [62172, 62174],
-    [49898, 49899],
+    [62166, 62175],
+    [49898, 49903],
   ],
   18: [
-    [124345, 124348],
-    [99797, 99799],
+    [124332, 124351],
+    [99797, 99807],
   ],
   19: [
-    [248691, 248696],
-    [199594, 199599],
+    [248664, 248703],
+    [199594, 199614],
   ],
   20: [
-    [497382, 497393],
-    [399188, 399199],
+    [497329, 497406],
+    [399189, 399229],
   ],
   21: [
-    [994765, 994787],
-    [798377, 798398],
+    [994658, 994812],
+    [798378, 798458],
   ],
   22: [
-    [1989530, 1989574],
-    [1596754, 1596797],
+    [1989316, 1989624],
+    [1596756, 1596917],
   ],
 };
 
 const xyz = new XYZ({
   tileUrlFunction(coord) {
     const [zoom, x, y] = coord;
-    if (
-      zoom < 16 ||
-      zoom > 22 ||
-      // @ts-ignore
-      bounds[zoom][0][0] > x ||
-      // @ts-ignore
-      x > bounds[zoom][0][1] ||
-      // @ts-ignore
-      bounds[zoom][1][0] > y ||
-      // @ts-ignore
-      y > bounds[zoom][1][1]
-    ) {
+    console.log(zoom, x, y);
+
+    if (zoom < 13 || zoom > 22 || bounds[zoom][0][0] > x || x > bounds[zoom][0][1] || bounds[zoom][1][0] > y || y > bounds[zoom][1][1]) {
       return "";
     }
-    return `/r/${zoom}/${x}/${Math.pow(2, zoom) - y - 1}.png`;
+    return `/r2/${zoom}/${x}/${Math.pow(2, zoom) - y - 1}.png`;
   },
 });
 
 const tile1 = new Tile({
-  properties: { name: "Ортофотоплан" },
+  visible: false,
+  properties: { name: "DEM" },
   source: xyz,
-  zIndex: 0,
 });
 
 export default tile1;

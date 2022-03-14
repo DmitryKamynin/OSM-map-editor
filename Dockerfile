@@ -3,4 +3,8 @@ WORKDIR /var/www/html
 COPY ./ ./ 
 RUN yarn install
 RUN yarn build
-CMD ["yarn","preview"] 
+RUN mv ./r ./dist/
+RUN mv ./r1 ./dist/
+RUN mv ./server.js ./
+
+CMD ["node","dist/server.js"]

@@ -4,6 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "preact/compat";
 
 import menuList from "../model";
 import ToolsStore from "../../tools/viewModel";
+import { map } from "../../map/view";
+import { Feature } from "ol";
+import { Geometry } from "ol/geom";
+import FeatureManager from "../../featureManager/viewModel";
 
 const ContextMenu = observer((): JSX.Element => {
   const menuRef = useRef<HTMLDivElement>(null);
@@ -20,17 +24,30 @@ const ContextMenu = observer((): JSX.Element => {
     [open]
   );
 
-  const click = useCallback(() => {
-    setOpen(false);
-  }, []);
+  const mapClick = useCallback(
+    (e: any) => {
+      if (ToolsStore.currentTool === "none") {
+        const features = map.getFeaturesAtPixel(e.pixel) as [Feature<Geometry>];
+        FeatureManager.setCurrentFeature(features[0]);
+        if (features[0]) {
+          const menuElem = menuRef.current as HTMLDivElement;
+          menuElem.style.top = `${e.originalEvent.clientY}px`;
+          menuElem.style.left = `${e.originalEvent.clientX}px`;
+          setOpen(true);
+        } else setOpen(false);
+      } else setOpen(false);
+    },
+    [open]
+  );
 
   useEffect(() => {
     if (menuRef.current) {
       window.addEventListener("contextmenu", contextmenu);
-      window.addEventListener("click", click);
+      map.on("click", mapClick);
+
       return () => {
         window.removeEventListener("contextmenu", contextmenu);
-        window.removeEventListener("click", click);
+        map.un("click", mapClick);
       };
     }
   }, [menuRef.current, open]);
@@ -43,6 +60,7 @@ const ContextMenu = observer((): JSX.Element => {
         <button
           type="button"
           onClick={() => {
+            setOpen(false);
             if (menu.action) menu.action();
           }}
         >

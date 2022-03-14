@@ -4,10 +4,10 @@ import { Draw } from "ol/interaction";
 import FeatureManager from "../../featureManager/viewModel";
 import vectorSource from "../../map/modules/vectorSource/model";
 import { Feature } from "ol";
-import { Geometry, Polygon } from "ol/geom";
+import { Geometry } from "ol/geom";
 import ColorPickerStore from "../../colorPicker/viewModel";
-import RoadGenerator from "../../roadGenerator/viewmodel";
-import { toLonLat } from "ol/proj";
+import createOverlay from "../../utils/createOverlay";
+import deleteOverlay from "../../utils/deleteOverlay";
 
 type Keys = ToolsModelType["currentTool"];
 
@@ -20,14 +20,14 @@ type MenuList = Record<Keys, MenuListElem[]>;
 
 const drawMenus = (): MenuListElem[] => [
   {
-    title: "Закончить рисовать",
+    title: "Finish drawing",
     action() {
       const interaction = map.getInteractions().getArray();
       (interaction[interaction.length - 1] as Draw).finishDrawing();
     },
   },
   {
-    title: "Рисовать сначала",
+    title: "Draw again",
     action() {
       const interaction = map.getInteractions().getArray();
       (interaction[interaction.length - 1] as Draw).abortDrawing();
@@ -38,64 +38,28 @@ const drawMenus = (): MenuListElem[] => [
 const menuLists = (): MenuList => {
   const draws = drawMenus();
   const feature = FeatureManager.currentFeature as unknown as Feature<Geometry>;
-  const featureProps = feature?.getProperties();
+  const type = FeatureManager.currentFeature?.getGeometry()?.getType();
 
+  const none = [
+    {
+      title: "Delete",
+      action() {
+        vectorSource.removeFeature(feature);
+        deleteOverlay(feature);
+        FeatureManager.clearCurrentFeature();
+      },
+    },
+    {
+      title: "Change color",
+      action() {
+        ColorPickerStore.handleOpen(true);
+      },
+    },
+  ];
   return {
     line: draws,
-    pen: draws,
     polygon: draws,
-    choice: feature
-      ? [
-          !featureProps.saved
-            ? {
-                title: "Сохранить объект",
-                action() {
-                  FeatureManager.saveToLocalStorage(feature);
-                  console.log(
-                    (feature.getGeometry() as Polygon).getCoordinates()[0][0]
-                  );
-                },
-              }
-            : {
-                title: "Не сохранять объект",
-                action() {
-                  FeatureManager.removeFromLocalStorage(feature);
-                },
-              },
-          {
-            title: "Удалить объект",
-            action() {
-              FeatureManager.removeFromLocalStorage(feature);
-              vectorSource.removeFeature(feature);
-              FeatureManager.clearCurrentFeature();
-            },
-          },
-          {
-            title: "Выбрать новый цвет",
-            action() {
-              ColorPickerStore.handleOpen(true);
-            },
-          },
-          {
-            title: "Сгенерировать маршрут",
-            action() {
-              RoadGenerator();
-            },
-          },
-        ]
-      : [{ title: "Сначала выберите объект" }],
-    none: [
-      {
-        title:
-          "Контекстное меню доступно для Карандаша, Полигона, Маршрута и Выбора",
-      },
-    ],
-    edit: [
-      {
-        title:
-          "Контекстное меню доступно для Карандаша, Полигона, Маршрута и Выбора",
-      },
-    ],
+    none: feature ? none : [{ title: "First choice object" }],
   };
 };
 

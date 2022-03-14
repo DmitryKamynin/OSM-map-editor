@@ -4,6 +4,7 @@ import ContextMenu from "../modules/contextmenu/view";
 import mapControlInit from "../modules/map/viewModel";
 import StylePicker from "../modules/colorPicker/view";
 import LayerSwitch from "../modules/layerSwitch/view";
+import SaveLoad from "../modules/saveLoad/view";
 
 mapControlInit();
 
@@ -15,6 +16,7 @@ export function App() {
       <ContextMenu />
       <StylePicker />
       <LayerSwitch />
+      <SaveLoad />
     </>
   );
 }

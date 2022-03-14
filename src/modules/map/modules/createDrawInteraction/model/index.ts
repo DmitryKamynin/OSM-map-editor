@@ -1,9 +1,11 @@
 import { Draw } from "ol/interaction";
 import StyleControl from "../../../../colorPicker/model";
 import vectorSource from "../../vectorSource/model";
-import { Feature } from "ol";
+import featureInit from "../../../../utils/featureInit";
 
 const createDraw = (type: "LineString" | "Polygon", freehand?: boolean) => {
+  const drawStyle = new StyleControl();
+  drawStyle.addStyle();
   const draw = new Draw({
     type,
     freehand,
@@ -14,20 +16,11 @@ const createDraw = (type: "LineString" | "Polygon", freehand?: boolean) => {
       }
       return false;
     },
-    style: new StyleControl().style,
+    style: drawStyle.style,
   });
 
   draw.on("drawend", ({ feature }) => {
-    if (feature instanceof Feature) {
-      const styleControl = new StyleControl();
-      // Сохраняю стиль для конкретной фичи, чтобы он хранился в ней, а не в векторном слое
-      feature.setStyle(styleControl.style);
-
-      // Сохраняю объект класса, styleControl в пропсах фичи, чтобы можно было манипулировать её стилем в будущем в FeatureManager
-      feature.setProperties({
-        styleControl,
-      });
-    }
+    featureInit(feature);
   });
 
   return draw;

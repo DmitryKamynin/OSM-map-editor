@@ -3,14 +3,7 @@ import { Interaction } from "ol/interaction";
 
 const ToolsModel = types
   .model({
-    currentTool: types.enumeration([
-      "pen",
-      "edit",
-      "line",
-      "polygon",
-      "choice",
-      "none",
-    ]),
+    currentTool: types.enumeration(["line", "polygon", "none"]),
   })
   .volatile((): { lastDraw?: Interaction } => ({
     lastDraw: undefined,

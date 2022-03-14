@@ -8,7 +8,7 @@ const Style = styled(SketchPicker)`
   &.open {
     display: block;
     right: 0;
-    top: 0;
+    bottom: 0;
   }
 `;
 
